@@ -1,0 +1,1235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <script type="text/javascript">
+        (function() {
+            // only want one resizer on the page
+            if (document.documentElement.className.indexOf("g-resizer-v3-init") > -1) return;
+            document.documentElement.className += " g-resizer-v3-init";
+            // require IE9+
+            if (!("querySelector" in document)) return;
+            function resizer() {
+                var elements = Array.prototype.slice.call(document.querySelectorAll(".g-artboard[data-min-width]")),
+                    widthById = {};
+                elements.forEach(function(el) {
+                    var parent = el.parentNode,
+                        width = widthById[parent.id] || parent.getBoundingClientRect().width,
+                        minwidth = el.getAttribute("data-min-width"),
+                        maxwidth = el.getAttribute("data-max-width");
+                    widthById[parent.id] = width;
+                    if (+minwidth <= width && (+maxwidth >= width || maxwidth === null)) {
+                        el.style.display = "block";
+                    } else {
+                        el.style.display = "none";
+                    }
+                });
+                try {
+                    if (window.parent && window.parent.$) {
+                        window.parent.$("body").trigger("resizedcontent", [window]);
+                    }
+                    if (window.require) {
+                        require(['foundation/main'], function() {
+                            require(['shared/interactive/instances/app-communicator'], function(AppCommunicator) {
+                                AppCommunicator.triggerResize();
+                            });
+                        });
+                    }
+                } catch(e) { console.log(e); }
+            }
+            document.addEventListener('DOMContentLoaded', resizer);
+            // feel free to replace throttle with _.throttle, if available
+            window.addEventListener('resize', throttle(resizer, 200));        
+            function throttle(func, wait) {
+                // from underscore.js
+                var _now = Date.now || function() { return new Date().getTime(); },
+                    context, args, result, timeout = null, previous = 0;
+                var later = function() {
+                    previous = _now();
+                    timeout = null;
+                    result = func.apply(context, args);
+                    if (!timeout) context = args = null;
+                };
+                return function() {
+                    var now = _now(), remaining = wait - (now - previous);
+                    context = this;
+                    args = arguments;
+                    if (remaining <= 0 || remaining > wait) {
+                        if (timeout) {
+                            clearTimeout(timeout);
+                            timeout = null;
+                        }
+                        previous = now;
+                        result = func.apply(context, args);
+                        if (!timeout) context = args = null;
+                    } else if (!timeout && options.trailing !== false) {
+                        timeout = setTimeout(later, remaining);
+                    }
+                    return result;
+                };
+            }
+           
+        })();
+    </script>
+
+
+    <style>
+        body {
+            margin:auto;
+            padding:50px 10px;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .serif {
+            font-family: 'Lora', serif;
+        }
+        .sans-serif {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* choose a light or dark theme to add to the body tag. */
+        .dark-theme {
+            background-color: #151515;
+            color: #fbfbfb;
+        }
+        .light-theme {
+            background-color: white;
+            color: black;
+        }
+
+        .header {
+            padding-top:20px;
+            padding-bottom:20px;
+        }
+
+        .story-body, .header, .chart-section, .footer {
+            margin:auto;
+            max-width: 700px;
+        }
+
+        .footer {
+            padding-top:20px;
+            padding-bottom:20px;
+        }
+
+        .chart-section.wide{
+            width:100%;
+            max-width:1200px;
+        }
+
+        .chart-section.wide p.chart-title {
+            width:100%;
+            max-width:700px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+        .chart-section.wide p.chart-subhead {
+            width:100%;
+            max-width:700px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
+
+        /* text styles */
+
+        p.kicker {
+            font-size:1rem;
+            text-transform:uppercase;
+        }
+
+        .text-center {
+            text-align:center;
+        }
+
+        h1.headline {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 0.25rem;
+            margin-top: 1rem;
+            font-weight: 800;
+            font-family: Georgia;
+        }
+
+        h2.subhead {
+            font-size: 1.4rem;
+            line-height: 2rem;
+            margin-bottom:0;
+            margin-top: 15px;
+            font-weight: 200;
+        }
+
+        p.body-text {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            margin-top:0;
+            margin-bottom:15px;
+        }
+
+        h3.section-head {
+            font-size:2rem;
+            margin:40px 0 10px 0;
+            font-weight:700;
+            line-height:1.3;
+            font-family: Arial;
+        }
+
+        .byline {
+            font-size: 1.1rem;
+            line-height: 1;
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+
+        .date {
+            font-size: 0.85rem;
+            line-height: 1;
+            margin-top: 10px;
+            font-weight:400;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+        }
+
+
+        p.note {
+            font-size:0.85rem;
+        }
+
+        /* chart styles */
+
+        .chart-section {
+            width:120%;
+            max-width:1200px;
+            padding:20px 0px;
+        }
+
+        .story-body .chart-section {
+            padding-top:0px;
+        }
+
+
+        .chart-row {
+            display:flex;
+            justify-content: space-between;
+            margin-top:-20px;
+        }
+
+        p.chart-title {
+            font-size:1.3rem;
+            font-weight:700;
+            max-width:700px;
+            margin:0px auto 5px auto;
+        }
+        p.chart-subhead {
+            margin:0 auto;
+            max-width:700px;
+            font-size:1rem;
+            margin-bottom:15px;
+        }
+
+        p.chart-label {
+            margin:0 0 5px 0;
+            font-size:0.85rem;
+            text-transform:uppercase;
+            font-weight:600;
+        }
+
+        .chart-row .chart {
+            width:100%;
+            padding-right:15px;
+            min-width:calc(25% - 15px);
+
+        }
+
+
+
+        p.chart-source {
+            font-size:0.85rem;
+            margin:0;
+        }
+
+
+
+
+
+        /* photos */
+
+        .photo-section {
+            padding:30px 0px;
+            width:100%;
+            margin:auto;
+            display:flex;
+            max-width:1200px;
+        }
+
+        .photo {
+            width:100%;
+            padding-right:15px;
+        }
+        .photo img {
+            width:100%;	
+        }
+
+        p.caption {
+            font-size:0.9rem;
+            margin:0;
+        }
+
+
+
+        /* mobile */
+
+        @media (max-width:700px) {
+
+            .chart-row {
+                display:block;
+            }
+
+            .chart-row .chart {
+                padding:0;
+            }
+
+            .photo-section {
+                display:block;
+            }
+            .photo {
+                padding:0;
+            }
+
+        }
+
+        #g-templates-laptop, #g-templates-medium, #g-templates-mobile {
+            display: none;
+        }
+
+        @media (max-width: 490px) {
+            #g-templates-mobile {
+                display: block;
+            }
+        }
+
+        @media (min-width: 490px) and (max-width: 620px) {
+            #g-templates-laptop {
+                display: block;
+            }
+        }
+
+        @media (min-width: 620px)  {
+            #g-templates-medium {
+                display: block;
+            }
+        }
+
+    </style>
+    
+    <!-- google fonts: Open Sans (sans-serif) and Lora (serif) -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700&display=swap" rel="stylesheet">
+      
+    <title>Why are more Americans than ever dying from drug overdoses?</title>
+  </head>
+
+  <body class="light-theme"> <!-- all of the content on your html page goes inside the body -->
+
+    <div class="header">
+      <p class="kicker">Health</p>
+      <h1 class="headline">Why are more Americans than ever dying from drug overdoses?</h1>
+      <h2 class="subhead">Deaths from drug overdoses in the US reached staggering new heights in 2017, according to newly published figures. Trump called the crisis a “national shame and human tragedy” – but what is fuelling it?</h2>
+      <p class="byline">By Niko Kommenda, Erin Durkin and Lydia Smears</p>
+      <p class="date">Thu 29 Nov 2018 07.32 EST</p>
+    </div>
+
+    <div class="story-body">
+      <p class="body-text serif">The growing drugs crisis sweeping across the US is deadlier than gun violence, car crashes or Aids, none of which have killed as many Americans in a single year as overdoses did in 2017.</p>
+      <p class="body-text serif">Newly confirmed figures released by the Centers for Disease Control and Prevention (CDC) show the increasing scale of the crisis.</p>
+      <p class="body-text serif">The drugs epidemic is not confined to a small number of states nor to lower-income areas, but instead has spread across the whole country. While there are concentrations around the midwest, and regional differences in the type of substance, overdose deaths are happening everywhere.</p>
+    </div>
+
+    <div class="chart-section">
+        <div class="chart-row">
+          <div class="chart">
+
+            <!-- Generated by ai2html v0.94.0 - 2019-09-15 20:38 -->
+            <!-- ai file: map.ai -->
+            <style media="screen,print">
+                #g-map-box ,
+                #g-map-box .g-artboard {
+                    margin:0 auto;
+                }
+                #g-map-box p {
+                    margin:0;
+                }
+                #g-map-box .g-aiAbs {
+                    position:absolute;
+                }
+                #g-map-box .g-aiImg {
+                    position:absolute;
+                    top:0;
+                    display:block;
+                    width:100% !important;
+                }
+                #g-map-box .g-aiSymbol {
+                    position: absolute;
+                    box-sizing: border-box;
+                }
+                #g-map-box .g-aiPointText p { white-space: nowrap; }
+                #g-map-medium {
+                    position:relative;
+                    overflow:hidden;
+                }
+                #g-map-medium p {
+                    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    font-weight:400;
+                    font-size:14px;
+                    line-height:14px;
+                    height:auto;
+                    filter:alpha(opacity=100);
+                    -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+                    opacity:1;
+                    letter-spacing:0em;
+                    text-align:left;
+                    color:rgb(73,73,73);
+                    text-transform:none;
+                    padding-bottom:0;
+                    padding-top:0;
+                    mix-blend-mode:normal;
+                    font-style:normal;
+                    position:static;
+                }
+                #g-map-medium .g-pstyle0 {
+                    font-family:georgia,'times new roman',times,serif;
+                    font-weight:bold;
+                    font-size:21px;
+                    line-height:25px;
+                    height:25px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-medium .g-pstyle1 {
+                    font-weight:700;
+                    height:14px;
+                }
+                #g-map-medium .g-pstyle2 {
+                    height:14px;
+                    color:rgb(244,11,11);
+                }
+                #g-map-medium .g-pstyle3 {
+                    height:14px;
+                }
+                #g-map-medium .g-pstyle4 {
+                    font-weight:700;
+                    line-height:17px;
+                    height:17px;
+                }
+                #g-map-medium .g-pstyle5 {
+                    line-height:17px;
+                    height:17px;
+                }
+                #g-map-medium .g-pstyle6 {
+                    font-weight:700;
+                    line-height:15px;
+                    height:15px;
+                }
+                #g-map-medium .g-pstyle7 {
+                    line-height:15px;
+                    height:15px;
+                }
+                #g-map-medium .g-pstyle8 {
+                    font-family:georgia,'times new roman',times,serif;
+                    font-weight:bold;
+                    line-height:17px;
+                    height:17px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-medium .g-pstyle9 {
+                    line-height:15px;
+                    height:15px;
+                    color:rgb(58,158,201);
+                }
+                #g-map-medium .g-pstyle10 {
+                    line-height:12px;
+                    height:12px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-medium .g-pstyle11 {
+                    font-style:italic;
+                    font-size:10px;
+                    line-height:12px;
+                    height:12px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-medium .g-cstyle0 {
+                    font-weight:400;
+                }
+                #g-map-medium .g-cstyle1 {
+                    color:rgb(244,11,11);
+                }
+                #g-map-laptop {
+                    position:relative;
+                    overflow:hidden;
+                }
+                #g-map-laptop p {
+                    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    font-weight:400;
+                    font-size:12px;
+                    line-height:12px;
+                    height:auto;
+                    filter:alpha(opacity=100);
+                    -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+                    opacity:1;
+                    letter-spacing:0em;
+                    text-align:left;
+                    color:rgb(73,73,73);
+                    text-transform:none;
+                    padding-bottom:0;
+                    padding-top:0;
+                    mix-blend-mode:normal;
+                    font-style:normal;
+                    position:static;
+                }
+                #g-map-laptop .g-pstyle0 {
+                    font-family:georgia,'times new roman',times,serif;
+                    font-weight:bold;
+                    font-size:18px;
+                    line-height:22px;
+                    height:22px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-laptop .g-pstyle1 {
+                    font-weight:700;
+                    height:12px;
+                }
+                #g-map-laptop .g-pstyle2 {
+                    height:12px;
+                    color:rgb(244,11,11);
+                }
+                #g-map-laptop .g-pstyle3 {
+                    height:12px;
+                }
+                #g-map-laptop .g-pstyle4 {
+                    font-family:georgia,'times new roman',times,serif;
+                    font-weight:bold;
+                    line-height:14px;
+                    height:14px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-laptop .g-pstyle5 {
+                    height:12px;
+                    color:rgb(58,158,201);
+                }
+                #g-map-laptop .g-pstyle6 {
+                    line-height:8px;
+                    height:8px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-laptop .g-pstyle7 {
+                    font-style:italic;
+                    font-size:8px;
+                    line-height:8px;
+                    height:8px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-laptop .g-cstyle0 {
+                    font-weight:400;
+                }
+                #g-map-laptop .g-cstyle1 {
+                    color:rgb(244,11,11);
+                }
+                #g-map-laptop .g-cstyle2 {
+                    color:rgb(73,73,73);
+                }
+                #g-map-mobile {
+                    position:relative;
+                    overflow:hidden;
+                }
+                #g-map-mobile p {
+                    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    font-weight:400;
+                    font-size:14px;
+                    line-height:18px;
+                    height:auto;
+                    filter:alpha(opacity=100);
+                    -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+                    opacity:1;
+                    letter-spacing:0em;
+                    text-align:left;
+                    color:rgb(73,73,73);
+                    text-transform:none;
+                    padding-bottom:0;
+                    padding-top:0;
+                    mix-blend-mode:normal;
+                    font-style:normal;
+                    position:static;
+                }
+                #g-map-mobile .g-pstyle0 {
+                    font-family:georgia,'times new roman',times,serif;
+                    font-weight:bold;
+                    font-size:18px;
+                    line-height:19px;
+                    height:19px;
+                    text-align:center;
+                    color:rgb(0,0,0);
+                }
+                #g-map-mobile .g-pstyle1 {
+                    font-size:12px;
+                    line-height:20px;
+                    height:20px;
+                    text-align:center;
+                    color:rgb(0,0,0);
+                }
+                #g-map-mobile .g-pstyle2 {
+                    font-size:11px;
+                    line-height:8px;
+                    height:8px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-mobile .g-pstyle3 {
+                    font-style:italic;
+                    font-size:10px;
+                    line-height:6px;
+                    height:6px;
+                    color:rgb(0,0,0);
+                }
+                #g-map-mobile .g-pstyle4 {
+                    font-weight:700;
+                    height:18px;
+                }
+                #g-map-mobile .g-pstyle5 {
+                    height:18px;
+                    color:rgb(244,11,11);
+                }
+                #g-map-mobile .g-pstyle6 {
+                    height:18px;
+                }
+                #g-map-mobile .g-pstyle7 {
+                    height:18px;
+                    color:rgb(58,158,201);
+                }
+                #g-map-mobile .g-cstyle0 {
+                    font-weight:400;
+                }
+                #g-map-mobile .g-cstyle1 {
+                    color:rgb(244,11,11);
+                }
+                #g-map-mobile .g-cstyle2 {
+                    color:rgb(73,73,73);
+                }
+
+            </style>
+
+            <div id="g-map-box" class="ai2html">
+
+                <!-- Artboard: medium -->
+                <div id="g-map-medium" class="g-artboard" style="width:700px; height:489px;" data-aspect-ratio="1.431" data-min-width="700">
+            <div style=""></div>
+                    <img id="g-map-medium-img" class="g-aiImg" alt="" src="map-medium.png"/>
+                    <div id="g-ai0-1" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:5.5045%;margin-top:-13.9px;left:2.4916%;width:562px;">
+                        <p class="g-pstyle0">Major cities and rural areas in the grip of the crisis</p>
+                    </div>
+                    <div id="g-ai0-2" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:18.5904%;margin-top:-36.9px;left:69.4614%;width:146px;">
+                        <p class="g-pstyle1"><span class="g-cstyle0">In </span>urbans areas<span class="g-cstyle0">,</span></p>
+                        <p class="g-pstyle2">heroin and synthetic</p>
+                        <p class="g-pstyle3"><span class="g-cstyle1">opioids</span> (eg fentanyl)</p>
+                        <p class="g-pstyle3">casue the most </p>
+                        <p class="g-pstyle3">deaths </p>
+                    </div>
+                    <div id="g-ai0-3" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:26.378%;margin-top:-30px;left:30.4671%;width:150px;">
+                        <p class="g-pstyle3">In many areas, </p>
+                        <p class="g-pstyle3">overdoses from a </p>
+                        <p class="g-pstyle3">range of substances </p>
+                        <p class="g-pstyle3">are recorded</p>
+                    </div>
+                    <div id="g-ai0-4" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:24.1428%;margin-top:-19.1px;left:2.4916%;width:148px;">
+                        <p class="g-pstyle4">Northern California</p>
+                        <p class="g-pstyle5">prescription Opioids</p>
+                    </div>
+                    <div id="g-ai0-5" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:40.6182%;margin-top:-24.6px;left:45.7687%;width:128px;">
+                        <p class="g-pstyle6">Chicago </p>
+                        <p class="g-pstyle7">heroin and </p>
+                        <p class="g-pstyle7">synthetic opioids </p>
+                    </div>
+                    <div id="g-ai0-6" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:45.6026%;margin-top:-30px;left:86.902%;width:96px;">
+                        <p class="g-pstyle1">New York </p>
+                        <p class="g-pstyle1">City </p>
+                        <p class="g-pstyle3">various </p>
+                        <p class="g-pstyle3">substances </p>
+                    </div>
+                    <div id="g-ai0-7" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:74.9973%;margin-top:-17.7px;left:2.4916%;width:160px;">
+                        <p class="g-pstyle8">Geographic spread </p>
+                        <p class="g-pstyle8">of drug deaths</p>
+                    </div>
+                    <div id="g-ai0-8" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:84.8777%;margin-top:-32.1px;left:57.4505%;width:142px;">
+                        <p class="g-pstyle6"><span class="g-cstyle0">In </span>rurals areas,</p>
+                        <p class="g-pstyle7">overdoses from</p>
+                        <p class="g-pstyle9">prescription opioids</p>
+                        <p class="g-pstyle7">are more common  </p>
+                    </div>
+                    <div id="g-ai0-9" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:83.4882%;margin-top:-8.3px;left:5.6177%;width:193px;">
+                        <p class="g-pstyle10">heroin and synthetic opioids</p>
+                    </div>
+                    <div id="g-ai0-10" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:88.8052%;margin-top:-8.3px;left:5.6177%;width:141px;">
+                        <p class="g-pstyle10">prescription opioids</p>
+                    </div>
+                    <div id="g-ai0-11" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:93.9177%;margin-top:-8.3px;left:5.6177%;width:228px;">
+                        <p class="g-pstyle10">other and unspecified substances</p>
+                    </div>
+                    <div id="g-ai0-12" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:95.4893%;margin-top:-7.9px;left:55.3823%;width:316px;">
+                        <p class="g-pstyle11">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                    </div>
+                </div>
+
+                <!-- Artboard: laptop -->
+                <div id="g-map-laptop" class="g-artboard" style="width:490px; height:350px;" data-aspect-ratio="1.4" data-min-width="490" data-max-width="699">
+            <div style=""></div>
+                    <img id="g-map-laptop-img" class="g-aiImg" alt="" src="map-laptop.png"/>
+                    <div id="g-ai1-1" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:7.5278%;margin-top:-12.3px;left:2.2628%;width:491px;">
+                        <p class="g-pstyle0">Major cities and rural areas in the grip of the crisis</p>
+                    </div>
+                    <div id="g-ai1-2" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:21.1557%;margin-top:-20px;left:60.2768%;width:133px;">
+                        <p class="g-pstyle1">Urbans areas<span class="g-cstyle0"> -</span></p>
+                        <p class="g-pstyle2">heroin and synthetic</p>
+                        <p class="g-pstyle3"><span class="g-cstyle1">opioids</span> (eg fentanyl) </p>
+                    </div>
+                    <div id="g-ai1-3" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:25.7271%;margin-top:-14px;left:2.2628%;width:131px;">
+                        <p class="g-pstyle1">Northern California</p>
+                        <p class="g-pstyle3">prescription Opioids</p>
+                    </div>
+                    <div id="g-ai1-4" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:41.7271%;margin-top:-20px;left:41.1627%;width:114px;">
+                        <p class="g-pstyle1">Chicago </p>
+                        <p class="g-pstyle3">heroin and </p>
+                        <p class="g-pstyle3">synthetic opioids </p>
+                    </div>
+                    <div id="g-ai1-5" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:45.7271%;margin-top:-26px;left:84.9025%;width:86px;">
+                        <p class="g-pstyle1">New York </p>
+                        <p class="g-pstyle1">City </p>
+                        <p class="g-pstyle3">various </p>
+                        <p class="g-pstyle3">substances </p>
+                    </div>
+                    <div id="g-ai1-6" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:74.5995%;margin-top:-15.1px;left:2.2628%;width:141px;">
+                        <p class="g-pstyle4">Geographic spread </p>
+                        <p class="g-pstyle4">of drug deaths</p>
+                    </div>
+                    <div id="g-ai1-7" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:81.7271%;margin-top:-14px;left:52.1915%;width:132px;">
+                        <p class="g-pstyle1">Rural areas - </p>
+                        <p class="g-pstyle5">prescription opioids<span class="g-cstyle2">  </span></p>
+                    </div>
+                    <div id="g-ai1-8" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:82.5822%;margin-top:-6px;left:5.3235%;width:171px;">
+                        <p class="g-pstyle6">heroin and synthetic opioids</p>
+                    </div>
+                    <div id="g-ai1-9" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:87.4393%;margin-top:-6px;left:5.3235%;width:125px;">
+                        <p class="g-pstyle6">prescription opioids</p>
+                    </div>
+                    <div id="g-ai1-10" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:92.2965%;margin-top:-6px;left:5.3235%;width:201px;">
+                        <p class="g-pstyle6">other and unspecified substances</p>
+                    </div>
+                    <div id="g-ai1-11" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:93.8167%;margin-top:-5.4px;left:51.6026%;width:249px;">
+                        <p class="g-pstyle7">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                    </div>
+                </div>
+
+                <!-- Artboard: mobile -->
+                <div id="g-map-mobile" class="g-artboard" style="max-width: 375px;max-height: 2087px" data-aspect-ratio="0.18" data-min-width="0" data-max-width="489">
+            <div style="padding: 0 0 556.48% 0;"></div>
+                    <img id="g-map-mobile-img" class="g-aiImg" alt="" src="map-mobile.png"/>
+                    <div id="g-ai2-1" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:3.3373%;margin-top:-39.6px;left:50.1042%;margin-left:-141.5px;width:283px;">
+                        <p class="g-pstyle0">Major cities and rural areas </p>
+                        <p class="g-pstyle0">in the grip of the crisis</p>
+                        <p class="g-pstyle1">Geographic spread of drug deaths</p>
+                    </div>
+                    <div id="g-ai2-2" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:5.9358%;margin-top:-5.9px;left:29.4398%;width:158px;">
+                        <p class="g-pstyle2">heroin and synthetic opioids</p>
+                    </div>
+                    <div id="g-ai2-3" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:6.7984%;margin-top:-5.9px;left:29.4398%;width:117px;">
+                        <p class="g-pstyle2">prescription opioids</p>
+                    </div>
+                    <div id="g-ai2-4" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:7.6609%;margin-top:-5.9px;left:29.4398%;width:186px;">
+                        <p class="g-pstyle2">other and unspecified substances</p>
+                    </div>
+                    <div id="g-ai2-5" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:20.9746%;margin-top:-4.7px;left:12.6875%;width:306px;">
+                        <p class="g-pstyle3">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                    </div>
+                    <div id="g-ai2-6" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:25.081%;margin-top:-29.4px;left:9.1128%;width:152px;">
+                        <p class="g-pstyle4">Urbans areas<span class="g-cstyle0"> -</span></p>
+                        <p class="g-pstyle5">heroin and synthetic</p>
+                        <p class="g-pstyle6"><span class="g-cstyle1">opioids</span> (eg fentanyl) </p>
+                    </div>
+                    <div id="g-ai2-7" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:35.336%;margin-top:-38.4px;left:64.2268%;width:97px;">
+                        <p class="g-pstyle4">New York </p>
+                        <p class="g-pstyle4">City </p>
+                        <p class="g-pstyle6">various </p>
+                        <p class="g-pstyle6">substances </p>
+                    </div>
+                    <div id="g-ai2-8" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:51.1494%;margin-top:-29.4px;left:19.7859%;width:129px;">
+                        <p class="g-pstyle4">Chicago </p>
+                        <p class="g-pstyle6">heroin and </p>
+                        <p class="g-pstyle6">synthetic opioids </p>
+                    </div>
+                    <div id="g-ai2-9" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:73.7198%;margin-top:-20.4px;left:27.7969%;width:150px;">
+                        <p class="g-pstyle4">Rural areas - </p>
+                        <p class="g-pstyle7">prescription opioids<span class="g-cstyle2">  </span></p>
+                    </div>
+                    <div id="g-ai2-10" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:80.1412%;margin-top:-20.4px;left:15.3568%;width:150px;">
+                        <p class="g-pstyle4">Northern California</p>
+                        <p class="g-pstyle6">prescription Opioids</p>
+                    </div>
+                    <div id="g-ai2-11" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:84.4061%;margin-top:-38.4px;left:47.8901%;width:150px;">
+                        <p class="g-pstyle4">Las Vegas</p>
+                        <p class="g-pstyle6">various substances, </p>
+                        <p class="g-pstyle6">including </p>
+                        <p class="g-pstyle6">methamphetamine</p>
+                    </div>
+                    <div id="g-ai2-12" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:98.7013%;margin-top:-4.7px;left:12.6875%;width:306px;">
+                        <p class="g-pstyle3">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- End ai2html - 2019-09-15 20:38 -->
+
+
+
+        </div>
+        </div>
+    </div>
+
+    <div class="story-body">
+        <p class="body-text serif">One factor fuelling the problem is that illegal narcotics are more readily available than ever, as drug distribution networks have expanded to rural and suburban areas.</p>
+        <p class="body-text serif">But there are other elements at work. Part of the reason illicit drug traders are able to proliferate so widely across the midwest and other regions is to do with the market there. These areas are home to thousands of people who first developed an addiction to prescription pills.</p>
+    </div>
+    <div class="story-body">
+        <h3 class="section-head serif">Roots of the crisis</h3>
+        <p class="body-text serif">The US medical sector has historically been a leading consumer of opioids – substances that produce morphine-like effects. In the 1990s opioid-based painkillers became a common remedy for a variety of conditions, such as back pain and arthritis.</p>
+        <p class="body-text serif">Pharmaceutical companies aggressively lobbied doctors to prescribe new formulations such as OxyContin, which they claimed could provide effective pain relief with no real addiction risk even to long-term patients.</p>
+    </div>
+
+
+    <div class="chart-section">
+        <div class="chart-row">
+            <div class="chart">
+
+                <!-- Generated by ai2html v0.94.0 - 2019-09-15 20:44 -->
+                <!-- ai file: point-plot.ai -->
+                <style media="screen,print">
+                    #g-point-plot-box ,
+                    #g-point-plot-box .g-artboard {
+                        margin:0 auto;
+                    }
+                    #g-point-plot-box p {
+                        margin:0;
+                    }
+                    #g-point-plot-box .g-aiAbs {
+                        position:absolute;
+                    }
+                    #g-point-plot-box .g-aiImg {
+                        position:absolute;
+                        top:0;
+                        display:block;
+                        width:100% !important;
+                    }
+                    #g-point-plot-box .g-aiSymbol {
+                        position: absolute;
+                        box-sizing: border-box;
+                    }
+                    #g-point-plot-box .g-aiPointText p { white-space: nowrap; }
+                    #g-point-plot-medium {
+                        position:relative;
+                        overflow:hidden;
+                    }
+                    #g-point-plot-medium p {
+                        font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                        font-weight:400;
+                        font-size:14px;
+                        line-height:17px;
+                        height:auto;
+                        filter:alpha(opacity=100);
+                        -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+                        opacity:1;
+                        letter-spacing:0em;
+                        text-align:left;
+                        color:rgb(0,0,0);
+                        text-transform:none;
+                        padding-bottom:0;
+                        padding-top:0;
+                        mix-blend-mode:normal;
+                        font-style:normal;
+                        position:static;
+                    }
+                    #g-point-plot-medium .g-pstyle0 {
+                        font-family:georgia,'times new roman',times,serif;
+                        font-weight:bold;
+                        font-size:20px;
+                        line-height:24px;
+                        height:24px;
+                    }
+                    #g-point-plot-medium .g-pstyle1 {
+                        height:17px;
+                    }
+                    #g-point-plot-medium .g-pstyle2 {
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        text-align:center;
+                        color:rgb(51,51,51);
+                    }
+                    #g-point-plot-medium .g-pstyle3 {
+                        font-weight:700;
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        color:rgb(193,39,45);
+                    }
+                    #g-point-plot-medium .g-pstyle4 {
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        color:rgb(91,90,90);
+                    }
+                    #g-point-plot-medium .g-pstyle5 {
+                        font-style:italic;
+                        font-size:10px;
+                        line-height:12px;
+                        height:12px;
+                        color:rgb(51,51,51);
+                    }
+                    #g-point-plot-laptop {
+                        position:relative;
+                        overflow:hidden;
+                    }
+                    #g-point-plot-laptop p {
+                        font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                        font-weight:400;
+                        font-size:13px;
+                        line-height:16px;
+                        height:auto;
+                        filter:alpha(opacity=100);
+                        -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+                        opacity:1;
+                        letter-spacing:0em;
+                        text-align:left;
+                        color:rgb(0,0,0);
+                        text-transform:none;
+                        padding-bottom:0;
+                        padding-top:0;
+                        mix-blend-mode:normal;
+                        font-style:normal;
+                        position:static;
+                    }
+                    #g-point-plot-laptop .g-pstyle0 {
+                        font-family:georgia,'times new roman',times,serif;
+                        font-weight:bold;
+                        font-size:18px;
+                        line-height:22px;
+                        height:22px;
+                    }
+                    #g-point-plot-laptop .g-pstyle1 {
+                        height:16px;
+                    }
+                    #g-point-plot-laptop .g-pstyle2 {
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        text-align:center;
+                        color:rgb(51,51,51);
+                    }
+                    #g-point-plot-laptop .g-pstyle3 {
+                        font-weight:700;
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        color:rgb(193,39,45);
+                    }
+                    #g-point-plot-laptop .g-pstyle4 {
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        color:rgb(91,90,90);
+                    }
+                    #g-point-plot-laptop .g-pstyle5 {
+                        font-style:italic;
+                        font-size:10px;
+                        line-height:12px;
+                        height:12px;
+                        color:rgb(51,51,51);
+                    }
+                    #g-point-plot-mobile {
+                        position:relative;
+                        overflow:hidden;
+                    }
+                    #g-point-plot-mobile p {
+                        font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                        font-weight:400;
+                        font-size:13px;
+                        line-height:16px;
+                        height:auto;
+                        filter:alpha(opacity=100);
+                        -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+                        opacity:1;
+                        letter-spacing:0em;
+                        text-align:left;
+                        color:rgb(0,0,0);
+                        text-transform:none;
+                        padding-bottom:0;
+                        padding-top:0;
+                        mix-blend-mode:normal;
+                        font-style:normal;
+                        position:static;
+                    }
+                    #g-point-plot-mobile .g-pstyle0 {
+                        font-family:georgia,'times new roman',times,serif;
+                        font-weight:bold;
+                        font-size:20px;
+                        line-height:24px;
+                        height:24px;
+                        text-align:center;
+                    }
+                    #g-point-plot-mobile .g-pstyle1 {
+                        height:16px;
+                        text-align:center;
+                    }
+                    #g-point-plot-mobile .g-pstyle2 {
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        text-align:center;
+                        color:rgb(51,51,51);
+                    }
+                    #g-point-plot-mobile .g-pstyle3 {
+                        font-weight:700;
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        color:rgb(193,39,45);
+                    }
+                    #g-point-plot-mobile .g-pstyle4 {
+                        font-size:12px;
+                        line-height:14px;
+                        height:14px;
+                        color:rgb(91,90,90);
+                    }
+                    #g-point-plot-mobile .g-pstyle5 {
+                        font-style:italic;
+                        font-size:10px;
+                        line-height:12px;
+                        height:12px;
+                        color:rgb(51,51,51);
+                    }
+
+                </style>
+
+                <div id="g-point-plot-box" class="ai2html">
+
+                    <!-- Artboard: medium -->
+                    <div id="g-point-plot-medium" class="g-artboard" style="width:700px; height:376.000000000001px;" data-aspect-ratio="1.862" data-min-width="700">
+                <div style=""></div>
+                        <img id="g-point-plot-medium-img" class="g-aiImg" alt="" src="point-plot-medium.png"/>
+                        <div id="g-ai0-1" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:5.7172%;margin-top:-13.5px;left:2.8075%;width:517px;">
+                            <p class="g-pstyle0">Opioid Use World Rank - The US medical sector </p>
+                        </div>
+                        <div id="g-ai0-2" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:13.7972%;margin-top:-10.9px;left:2.8075%;width:616px;">
+                            <p class="g-pstyle1">Opioid consumption in the medical retail sector per year and per capita, in morphine equivalents</p>
+                        </div>
+                        <div id="g-ai0-3" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:27.1377%;margin-top:-9px;left:8.7019%;margin-left:-14.5px;width:29px;">
+                            <p class="g-pstyle2">0</p>
+                        </div>
+                        <div id="g-ai0-4" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:27.1377%;margin-top:-9px;left:21.6056%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">100</p>
+                        </div>
+                        <div id="g-ai0-5" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:27.1377%;margin-top:-9px;left:47.2368%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">300</p>
+                        </div>
+                        <div id="g-ai0-6" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:27.1377%;margin-top:-9px;left:72.7485%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">500</p>
+                        </div>
+                        <div id="g-ai0-7" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:27.1377%;margin-top:-9px;left:94.5509%;margin-left:-29.5px;width:59px;">
+                            <p class="g-pstyle2">700mg</p>
+                        </div>
+                        <div id="g-ai0-8" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:31.9268%;margin-top:-9px;left:11.8571%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai0-9" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:35.9143%;margin-top:-9px;left:5.1646%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">1980s</p>
+                        </div>
+                        <div id="g-ai0-10" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:47.0864%;margin-top:-9px;left:18%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai0-11" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:50.8079%;margin-top:-9px;left:5.1646%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">1990s</p>
+                        </div>
+                        <div id="g-ai0-12" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:62.5119%;margin-top:-9px;left:54.1429%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai0-13" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:66.4994%;margin-top:-9px;left:5.1646%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">2000s</p>
+                        </div>
+                        <div id="g-ai0-14" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:77.9375%;margin-top:-9px;left:75.7143%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai0-15" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:81.9249%;margin-top:-9px;left:5.1646%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">2010s</p>
+                        </div>
+                        <div id="g-ai0-16" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:86.7121%;margin-top:-9px;left:50.8571%;width:39px;">
+                            <p class="g-pstyle4">UK</p>
+                        </div>
+                        <div id="g-ai0-17" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:86.7121%;margin-top:-9px;left:61.4286%;width:71px;">
+                            <p class="g-pstyle4">Germany</p>
+                        </div>
+                        <div id="g-ai0-18" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:86.7121%;margin-top:-9px;left:70%;width:59px;">
+                            <p class="g-pstyle4">Austria</p>
+                        </div>
+                        <div id="g-ai0-19" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:86.7121%;margin-top:-9px;left:89.1429%;width:64px;">
+                            <p class="g-pstyle4">Canada</p>
+                        </div>
+                        <div id="g-ai0-20" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:95.1324%;margin-top:-7.7px;left:56.5769%;width:306px;">
+                            <p class="g-pstyle5">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                        </div>
+                    </div>
+
+                    <!-- Artboard: laptop -->
+                    <div id="g-point-plot-laptop" class="g-artboard" style="width:519px; height:326px;" data-aspect-ratio="1.592" data-min-width="519" data-max-width="699">
+                <div style=""></div>
+                        <img id="g-point-plot-laptop-img" class="g-aiImg" alt="" src="point-plot-laptop.png"/>
+                        <div id="g-ai1-1" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:9.9224%;margin-top:-12.3px;left:3.929%;width:467px;">
+                            <p class="g-pstyle0">Opioid Use World Rank - The US medical sector </p>
+                        </div>
+                        <div id="g-ai1-2" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:20.5542%;margin-top:-18px;left:3.929%;width:472px;">
+                            <p class="g-pstyle1">      Opioid consumption in the medical retail sector per year and per capita, </p>
+                            <p class="g-pstyle1">      in morphine equivalents</p>
+                        </div>
+                        <div id="g-ai1-3" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:33.1404%;margin-top:-9px;left:92.7102%;margin-left:-29.5px;width:59px;">
+                            <p class="g-pstyle2">700mg</p>
+                        </div>
+                        <div id="g-ai1-4" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:33.4471%;margin-top:-9px;left:11.6463%;margin-left:-14.5px;width:29px;">
+                            <p class="g-pstyle2">0</p>
+                        </div>
+                        <div id="g-ai1-5" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:33.4471%;margin-top:-9px;left:23.9721%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">100</p>
+                        </div>
+                        <div id="g-ai1-6" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:33.4471%;margin-top:-9px;left:48.4742%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">300</p>
+                        </div>
+                        <div id="g-ai1-7" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:33.4471%;margin-top:-9px;left:72.8623%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">500</p>
+                        </div>
+                        <div id="g-ai1-8" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:37.4371%;margin-top:-9px;left:14.6535%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai1-9" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:40.8091%;margin-top:-9px;left:7.1082%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">1980s</p>
+                        </div>
+                        <div id="g-ai1-10" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:49.707%;margin-top:-9px;left:20.5257%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai1-11" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:53.079%;margin-top:-9px;left:7.1082%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">1990s</p>
+                        </div>
+                        <div id="g-ai1-12" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:62.5905%;margin-top:-9px;left:55.0766%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai1-13" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:65.6557%;margin-top:-9px;left:7.1082%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">2000s</p>
+                        </div>
+                        <div id="g-ai1-14" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:75.1672%;margin-top:-9px;left:75.6981%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai1-15" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:75.1649%;margin-top:-9px;left:61.6561%;width:71px;">
+                            <p class="g-pstyle4">Germany</p>
+                        </div>
+                        <div id="g-ai1-16" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:78.2324%;margin-top:-9px;left:7.1082%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">2010s</p>
+                        </div>
+                        <div id="g-ai1-17" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:81.9134%;margin-top:-9px;left:88.116%;width:64px;">
+                            <p class="g-pstyle4">Canada</p>
+                        </div>
+                        <div id="g-ai1-18" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:82.2201%;margin-top:-9px;left:70.2354%;width:59px;">
+                            <p class="g-pstyle4">Austria</p>
+                        </div>
+                        <div id="g-ai1-19" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:82.8336%;margin-top:-9px;left:51.7431%;width:39px;">
+                            <p class="g-pstyle4">UK</p>
+                        </div>
+                        <div id="g-ai1-20" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:90.3982%;margin-top:-7.7px;left:41.493%;width:306px;">
+                            <p class="g-pstyle5">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                        </div>
+                    </div>
+
+                    <!-- Artboard: mobile -->
+                    <div id="g-point-plot-mobile" class="g-artboard" style="max-width: 375px;max-height: 862px" data-aspect-ratio="0.435" data-min-width="0" data-max-width="518">
+                <div style="padding: 0 0 229.8133% 0;"></div>
+                        <img id="g-point-plot-mobile-img" class="g-aiImg" alt="" src="point-plot-mobile.png"/>
+                        <div id="g-ai2-1" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:5.3953%;margin-top:-25.5px;left:49.7169%;margin-left:-135px;width:270px;">
+                            <p class="g-pstyle0">Opioid Use World Rank </p>
+                            <p class="g-pstyle0">- The US medical sector </p>
+                        </div>
+                        <div id="g-ai2-2" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:12.6256%;margin-top:-25.8px;left:50.5563%;margin-left:-147.5px;width:295px;">
+                            <p class="g-pstyle1">Opioid consumption in the medical retail sector </p>
+                            <p class="g-pstyle1">per year and per capita,</p>
+                            <p class="g-pstyle1">in morphine equivalents</p>
+                        </div>
+                        <div id="g-ai2-3" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:19.2664%;margin-top:-9px;left:21.0448%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">1980s</p>
+                        </div>
+                        <div id="g-ai2-4" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:19.2664%;margin-top:-9px;left:43.6227%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">1990s</p>
+                        </div>
+                        <div id="g-ai2-5" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:19.2664%;margin-top:-9px;left:64.6008%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">2000s</p>
+                        </div>
+                        <div id="g-ai2-6" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:19.2664%;margin-top:-9px;left:86.3786%;margin-left:-27.5px;width:55px;">
+                            <p class="g-pstyle2">2010s</p>
+                        </div>
+                        <div id="g-ai2-7" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:20.5428%;margin-top:-9px;left:8.0852%;margin-left:-22.5px;width:45px;">
+                            <p class="g-pstyle2">0mg</p>
+                        </div>
+                        <div id="g-ai2-8" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:24.6049%;margin-top:-9px;left:24%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai2-9" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:29.7105%;margin-top:-9px;left:46.6667%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai2-10" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:31.1021%;margin-top:-9px;left:8.5711%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">100</p>
+                        </div>
+                        <div id="g-ai2-11" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:48.7396%;margin-top:-9px;left:78.2148%;width:39px;">
+                            <p class="g-pstyle4">UK</p>
+                        </div>
+                        <div id="g-ai2-12" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:51.8725%;margin-top:-9px;left:8.5711%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">300</p>
+                        </div>
+                        <div id="g-ai2-13" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:58.9516%;margin-top:-9px;left:68%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai2-14" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:67.6535%;margin-top:-9px;left:69.5167%;width:71px;">
+                            <p class="g-pstyle4">Germany</p>
+                        </div>
+                        <div id="g-ai2-15" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:72.527%;margin-top:-9px;left:72.7167%;width:59px;">
+                            <p class="g-pstyle4">Austria</p>
+                        </div>
+                        <div id="g-ai2-16" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:72.643%;margin-top:-9px;left:8.5711%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">500</p>
+                        </div>
+                        <div id="g-ai2-17" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:76.357%;margin-top:-9px;left:89.3333%;width:39px;">
+                            <p class="g-pstyle3">US</p>
+                        </div>
+                        <div id="g-ai2-18" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:88.656%;margin-top:-9px;left:71.4667%;width:64px;">
+                            <p class="g-pstyle4">Canada</p>
+                        </div>
+                        <div id="g-ai2-19" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:92.3692%;margin-top:-9px;left:8.5711%;margin-left:-21px;width:42px;">
+                            <p class="g-pstyle2">700</p>
+                        </div>
+                        <div id="g-ai2-20" class="g-ai2html-settings g-aiAbs g-aiPointText" style="top:96.9712%;margin-top:-7.7px;left:13.0768%;width:306px;">
+                            <p class="g-pstyle5">Data source: Centers for Disease Control and Prevention (CDC)</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- End ai2html - 2019-09-15 20:44 -->
+
+            </div>
+        </div>
+    </div>
+      
+  </body>
+</html>
